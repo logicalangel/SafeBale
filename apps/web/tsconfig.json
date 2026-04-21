@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "paths": {
+      "@baleguard/bale-js": ["../../packages/bale-js/src/index.ts"],
+      "@baleguard/e2e-crypto": ["../../packages/e2e-crypto/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "baleguard",
+  "private": true,
+  "version": "0.1.0",
+  "description": "E2E encrypted Bale Messenger client with Nahoft steganographic encoding",
+  "license": "AGPL-3.0",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "setup:wordlist": "npx tsx scripts/build-word-list.ts"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "protobufjs"
+    ]
+  }
+}
