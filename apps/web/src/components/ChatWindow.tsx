@@ -186,49 +186,105 @@ export function ChatWindow({ peerId }: Props) {
   const myId = auth.status === "authenticated" ? auth.userId : "";
 
   return (
-    <div className="chat-window">
-      <header className="chat-header">
-        <span>{peerId}</span>
+    <div className="flex h-full flex-col bg-[#0d1117]">
+      {/* Header */}
+      <header className="flex items-center justify-between border-b border-[#2d3748] bg-[#161b22] px-5 py-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2d3748] text-sm font-semibold text-white">
+            {peerId.slice(0, 1).toUpperCase()}
+          </div>
+          <span className="font-medium text-[#e2e8f0]">{peerId}</span>
+        </div>
+
         {e2eReady ? (
-          <span className="e2e-badge e2e-on" title="رمزنگاری سرتاسر فعال">
-            🔒 E2E
+          <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 ring-1 ring-emerald-500/20">
+            <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+            </svg>
+            E2E فعال
           </span>
         ) : (
-          <button className="handshake-btn" onClick={handleSendHandshake}>
-            🔑 شروع رمزنگاری
+          <button
+            onClick={handleSendHandshake}
+            className="flex items-center gap-1.5 rounded-full bg-blue-600/10 px-3 py-1 text-xs font-medium text-blue-400 ring-1 ring-blue-500/20 transition hover:bg-blue-600/20"
+          >
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+            شروع رمزنگاری
           </button>
         )}
       </header>
 
-      <div className="message-list">
-        {loading && <p className="loading">در حال بارگذاری…</p>}
-        {error && <p className="error">{error}</p>}
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`message ${m.senderId === myId ? "outgoing" : "incoming"}`}
-          >
-            <span className="message-text">{m.displayText}</span>
-            {m.encrypted && (
-              <span className="lock-icon" title="رمزنگاری‌شده">
-                🔒
-              </span>
-            )}
+      {/* Message list */}
+      <div className="flex-1 overflow-y-auto px-4 py-4">
+        {loading && (
+          <div className="flex items-center justify-center py-8">
+            <svg className="h-5 w-5 animate-spin text-[#4a5568]" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
           </div>
-        ))}
+        )}
+        {error && (
+          <p className="mx-auto max-w-xs rounded-lg bg-red-500/10 px-3 py-2 text-center text-sm text-red-400 ring-1 ring-red-500/20">
+            {error}
+          </p>
+        )}
+
+        <div className="flex flex-col gap-2">
+          {messages.map((m) => {
+            const isMe = m.senderId === myId;
+            return (
+              <div key={m.id} className={`flex ${isMe ? "justify-start" : "justify-end"}`}>
+                <div
+                  className={`group relative max-w-[72%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                    isMe
+                      ? "rounded-tr-sm bg-blue-600 text-white"
+                      : "rounded-tl-sm bg-[#1e2530] text-[#e2e8f0]"
+                  }`}
+                >
+                  <span>{m.displayText}</span>
+                  {m.encrypted && (
+                    <svg
+                      className={`inline-block h-3 w-3 ms-1.5 opacity-70 ${isMe ? "text-blue-200" : "text-emerald-400"}`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-label="رمزنگاری‌شده"
+                    >
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
         <div ref={bottomRef} />
       </div>
 
-      <form className="compose-bar" onSubmit={handleSend}>
+      {/* Compose bar */}
+      <form
+        onSubmit={handleSend}
+        className="flex items-center gap-2 border-t border-[#2d3748] bg-[#161b22] px-4 py-3"
+      >
         <input
           type="text"
           placeholder={e2eReady ? "پیام رمزنگاری‌شده…" : "پیام…"}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           disabled={loading}
+          className="flex-1 rounded-xl border border-[#2d3748] bg-[#0d1117] px-4 py-2.5 text-sm text-[#e2e8f0] placeholder-[#4a5568] outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50"
         />
-        <button type="submit" disabled={!draft.trim() || loading}>
-          ارسال
+        <button
+          type="submit"
+          disabled={!draft.trim() || loading}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white transition hover:bg-blue-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="ارسال"
+        >
+          <svg className="h-4 w-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
         </button>
       </form>
     </div>
